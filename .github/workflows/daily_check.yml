@@ -1,0 +1,40 @@
+name: Daily Trade Watch
+
+on:
+  schedule:
+    # 21:05 UTC = 4:05pm ET during Eastern Daylight Time (spring/summer)
+    #           = 5:05pm ET during Eastern Standard Time (fall/winter)
+    # GitHub Actions cron doesn't know about DST, so alerts will land an
+    # hour later (5:05pm ET) for part of the year. Adjust if that matters
+    # to you, or just treat it as "sometime after close."
+    - cron: "5 21 * * 1-5"
+  workflow_dispatch: {}   # lets you trigger a run manually from the Actions tab
+
+permissions:
+  issues: write
+
+jobs:
+  check-watchlist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run watchlist check
+        working-directory: src
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMS_GATEWAY_ADDRESS: ${{ secrets.SMS_GATEWAY_ADDRESS }}
+        run: python main.py
