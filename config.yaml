@@ -1,0 +1,21 @@
+# Edit this file to control what gets watched and when you're alerted.
+# Tickers must be valid Yahoo Finance symbols (e.g. AAPL, MSFT, VOO).
+
+watchlist:
+  - AAPL
+  - MSFT
+  - GOOGL
+  - VOO
+
+indicators:
+  # Moving average crossover ("Golden Cross" = bullish, "Death Cross" = bearish)
+  sma_short: 50
+  sma_long: 200
+
+  # RSI (Relative Strength Index) — momentum oscillator, 0-100
+  rsi_period: 14
+  rsi_oversold: 30    # below this = potentially oversold (buy signal territory)
+  rsi_overbought: 70  # above this = potentially overbought (sell signal territory)
+
+# How much price history to pull each run. 1y is plenty for 200-day SMA + RSI.
+lookback_period: "1y"
